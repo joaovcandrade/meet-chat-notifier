@@ -1,0 +1,21 @@
+{
+    "manifest_version": 2,
+    "version": "0.0.1",
+    "name": "Meet Chat Notifier",
+    "description": "Meet Chat Notifier",
+    "author": "João Vitor da Costa Andrade",
+    "permissions": ["notifications"],
+    "browser_action": {
+   	 "default_title": "Meet Chat Notifier",
+        "default_popup": "index.html"
+    },
+    "background": {
+        "scripts" : ["background.js"]
+    },
+    "content_scripts": [
+        {
+          "matches": ["https://meet.google.com/*"],
+          "js": ["content.js"]
+        }
+      ]
+    }
