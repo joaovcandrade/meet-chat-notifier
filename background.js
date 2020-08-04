@@ -3,7 +3,7 @@ messagesId = []
 function getNotificationId() {
     var id = (Date.now() * 100) + 1;
     return id.toString();
-  }
+}
 
 //Create notification
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
