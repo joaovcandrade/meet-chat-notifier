@@ -1,4 +1,4 @@
-mActive = true //Botão do chat?
+mActive = true //estado?
 
 /**
  * Ficar no loop de verificar se esta aberto ou fechado o chat
@@ -7,25 +7,30 @@ mActive = true //Botão do chat?
 
 
 const translation = {
-  pt: {enable:"Ativar notificações"},
-  en: {enable:"Enable notifications"}
+  pt: { enable: "Ativar notificações", enableMsg: "Para receber as notificações, mantenha o chat aberto." },
+  en: { enable: "Enable notifications", enableMsg: "To receive notifications, keep the chat open." }
 }
 
 var lang = document.documentElement.lang.split('-')[0]
-if (!translation[lang]) {lang = 'en'}
+if (!translation[lang]) { lang = 'en' }
 
 const selectors = {
-  chatDiv : '.mKBhCf', // CSS class of chat div: mKBhCf qwU8Me RlceJe kjZr4 
-  chatButton: '.l4V7wb', // CSS class of chat button: l4V7wb Fxmcue
-  chatBalon: '.cM3h5d', // NSvDmb cM3h5d
-  optionBar: '.q2u11' //
+  ariaLive: '[aria-live=polite]:not([aria-atomic])', // CSS class of chat div: mKBhCf qwU8Me RlceJe kjZr4 
+  //chatBalon: '[aria-atomic]', // NSvDmb cM3h5d
+  actionButtons: '[data-tooltip][data-is-muted]', //
+  participantId: '[data-initial-participant-id]',
+  topButtons: '[data-tooltip][data-tab-id]'
 };
 
-const classOfOpenedChat = "kjZr4";
-const getDivChat = () => { return document.querySelector(selectors.chatDiv) };
-const getBtnChat = () => { return document.querySelector(selectors.chatButton) };
-const getBalonChat = () => { return document.querySelector(selectors.chatBalon) };
-const getOptionBar = () => { return document.querySelector(selectors.optionBar)}
+const getAriaLive = () => { return document.querySelector(selectors.ariaLive) };
+//const getBalonChat = () => { return document.querySelector(selectors.chatBalon) };
+const getTopButtons = () => { return document.querySelectorAll(selectors.topButtons) };
+const getParticipantId = () => { return document.querySelector(selectors.participantId) };
+const getActionButtons = () => {
+  let b = document.querySelector(selectors.actionButtons)
+  return b ? b.parentNode.parentNode.parentNode.parentNode : null
+};
+
 
 initialConfig()
 
@@ -34,79 +39,114 @@ initialConfig()
  * Fica no loop até que ele que a pagina esteja carregada.
 */
 function initialConfig() {
-  setTimeout(() => { getDivChat() ? configChatObserver() : initialConfig() }, 1000);
+
+  setTimeout(() => { getParticipantId() ? initialize() : initialConfig() }, 1000);
 }
 
-function createOption(){
-  el = document.createElement('div');
-  el.innerHTML = 
-  `<div>
+function createOption() {
+  console.log("create")
+  let el = document.createElement('div');
+  el.innerHTML =
+    `<div>
+  <style>
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+  
+    position: absolute;
+    z-index: 1;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+  </style>
+  <div>
   <input type="checkbox" id="ck-notif" name="notif-chk" checked>
-  <label for="notif-chk">${translation[lang].enable}</label>
+  <label class="tooltip" for="notif-chk">${translation[lang].enable}
+  <span class="tooltiptext">${translation[lang].enableMsg}</span>
+  </label>
+  </div>
   </div>`
 
-  getOptionBar().prepend(el)
+  getActionButtons().prepend(el)
 
-  document.querySelector("#ck-notif").addEventListener('change', ()=>{
-      mActive = !mActive
+  document.querySelector("#ck-notif").addEventListener('change', () => {
+    mActive = !mActive
   })
 }
 
-function configChatObserver(){
+function initialize() {
+  //observableChatClosed()
+  console.log(getTopButtons())
+  getTopButtons().forEach(el => {
+    el.addEventListener('click', () => {
+      console.log("click!")
+      configChatObserver()
+    })
+  })
 
-  createOption()
+  createOption();
 
-  let callback = (mutationRecord, observer) => {
-    if ( getDivChat().className.includes(classOfOpenedChat) ) {
-      observableChatOpened();
-    } else {
-      observableChatClosed();
-    }
-  };
-
-  const observer = new MutationObserver(callback);
-  const config = {
-    childList: true,
-    subtree: true
-  };
-  observer.observe(getDivChat(), config);
-  callback();
 }
 
+function configChatObserver() {
+  console.log("teste!")
+  if (getAriaLive()) {
+    console.log("Deu!")
 
-function observableChatOpened() {
-  function callback(mutationRecord, observer) {
-    let messageElement = mutationRecord[mutationRecord.length - 1].addedNodes[0];
-    if(messageElement && mActive){
-      if(messageElement.dataset && messageElement.dataset.senderName){
-        senderName = messageElement.dataset.senderName
-        message_text = messageElement.lastChild.innerText
-      }else{
-        senderName = messageElement.parentElement.parentNode.dataset.senderName
-        message_text = messageElement.innerText
+
+    let callback = (mutationRecord, observer) => {
+      if (mutationRecord.length > 1) {
+        let messageElement = mutationRecord[mutationRecord.length - 1].addedNodes[0];
+        if (messageElement && mActive) {
+          if (messageElement.dataset.senderName) {
+            senderName = messageElement.dataset.senderName
+            message_text = messageElement.lastChild.innerText
+          } else {
+            senderName = messageElement.parentElement.parentNode.dataset.senderName
+            message_text = messageElement.innerText
+          }
+          showNotification(senderName, message_text);
+        }
       }
-      showNotification(senderName, message_text);
-    }
+
+    };
+
+    const observer = new MutationObserver(callback);
+
+    const config = {
+      childList: true,
+      subtree: true
+    };
+
+    observer.observe(getAriaLive(), config);
   }
 
-  const observer = new MutationObserver(callback);
-
-  const config = {
-    childList: true,
-    subtree: true
-  };
-  observer.observe(getDivChat(), config);
 }
 
-function observableChatClosed() {
+
+
+/*   function observableChatClosed() {
   function callback(mutationRecord, observer) {
     let messageElement = mutationRecord[mutationRecord.length - 1].addedNodes[0];
     if (messageElement && mActive) {
+      console.log(mutationRecord)
       let sender = messageElement.querySelector('.UgDTGe');
       let message = messageElement.querySelector('.xtO4Tc');
       showNotification(sender.innerText, message.innerText);
     }
-  }
+  } 
 
   const observer = new MutationObserver(callback);
 
@@ -115,10 +155,12 @@ function observableChatClosed() {
     subtree: true
   };
   observer.observe(getBalonChat(), config);
-}
+}  */
+
 
 // Recebe a mensagem a ser notificada
 function showNotification(sender, message) {
+
   var opt = {
     type: "basic",
     title: sender,
@@ -129,9 +171,8 @@ function showNotification(sender, message) {
   };
 
   chrome.runtime.sendMessage({
-    type: "shownotification",
     opt: opt
-  }, function () {});
+  }, function () { });
 
 
 }
