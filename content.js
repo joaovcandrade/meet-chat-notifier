@@ -7,8 +7,8 @@ mActive = true //estado?
 
 
 const translation = {
-  pt: { enable: "Ativar notificações", enableMsg: "Para receber as notificações, mantenha o chat aberto." },
-  en: { enable: "Enable notifications", enableMsg: "To receive notifications, keep the chat open." }
+  pt: { enable: "Ativar notificações", enableMsg: "Para receber as notificações, mantenha o chat aberto.<br> Clique no ícone da extensão para ver mais informações." },
+  en: { enable: "Enable notifications", enableMsg: "To receive notifications, keep the chat open.<br> Click the extension icon for more information." }
 }
 
 var lang = document.documentElement.lang.split('-')[0]
@@ -44,7 +44,6 @@ function initialConfig() {
 }
 
 function createOption() {
-  console.log("create")
   let el = document.createElement('div');
   el.innerHTML =
     `<div>
@@ -61,10 +60,11 @@ function createOption() {
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    padding: 5px 0;
-  
+    padding: 5px;
+    word-wrap: break-word;
+    display: inline;
     position: absolute;
-    z-index: 1;
+    z-index: 999;
   }
   
   .tooltip:hover .tooltiptext {
@@ -87,11 +87,11 @@ function createOption() {
 }
 
 function initialize() {
+
   //observableChatClosed()
   console.log(getTopButtons())
   getTopButtons().forEach(el => {
     el.addEventListener('click', () => {
-      console.log("click!")
       configChatObserver()
     })
   })
@@ -101,13 +101,9 @@ function initialize() {
 }
 
 function configChatObserver() {
-  console.log("teste!")
   if (getAriaLive()) {
-    console.log("Deu!")
-
-
     let callback = (mutationRecord, observer) => {
-      if (mutationRecord.length > 1) {
+      if (mutationRecord.length == 1) {
         let messageElement = mutationRecord[mutationRecord.length - 1].addedNodes[0];
         if (messageElement && mActive) {
           if (messageElement.dataset.senderName) {

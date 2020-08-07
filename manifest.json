@@ -4,7 +4,7 @@
     "name": "Meet Chat Notifier",
     "description": "Meet Chat Notifier",
     "author": "João Vitor da Costa Andrade",
-    "permissions": ["notifications"],
+    "permissions": ["notifications", "tabs"],
     "icons": {
       "16": "icon16.png",
       "24": "icon24.png",
