@@ -10,15 +10,33 @@ function getNotificationId() {
 
 //Create notification
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  messages.push(request.opt)
+  if(request.type == "notification"){
+    messages.push(request.opt)
 
   if (!watching) {
-    test = true
+    watching = true
     notifier()
   }
 
   sendResponse(true);
 
+  }
+});
+
+
+//Clean notifications
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if(request.type == "clean"){
+
+    messages = [] //clear
+
+    while(messages > 0){ //clear
+      chrome.notifications.clear(messagesId.shift(), () => {})
+    }      
+    }
+
+  sendResponse(true);
+  
 });
 
 function notifier() {

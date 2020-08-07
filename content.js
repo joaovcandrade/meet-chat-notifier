@@ -83,6 +83,11 @@ function createOption() {
 
   document.querySelector("#ck-notif").addEventListener('change', () => {
     mActive = !mActive
+    if(!mActive){
+      chrome.runtime.sendMessage({
+        type: "clean"
+      })
+    }
   })
 }
 
@@ -167,6 +172,7 @@ function showNotification(sender, message) {
   };
 
   chrome.runtime.sendMessage({
+    type: "notification",
     opt: opt
   }, function () { });
 
