@@ -16,14 +16,14 @@ if (!translation[lang]) { lang = 'en' }
 
 const selectors = {
   ariaLive: '[aria-live=polite]:not([aria-atomic])', // CSS class of chat div: mKBhCf qwU8Me RlceJe kjZr4 
-  //chatBalon: '[aria-atomic]', // NSvDmb cM3h5d
+  chatBalon: '.NSvDmb', // NSvDmb cM3h5d
   actionButtons: '[data-tooltip][data-is-muted]', //
   participantId: '[data-initial-participant-id]',
   topButtons: '[data-tooltip][data-tab-id]'
 };
 
 const getAriaLive = () => { return document.querySelector(selectors.ariaLive) };
-//const getBalonChat = () => { return document.querySelector(selectors.chatBalon) };
+const getBalonChat = () => { return document.querySelector(selectors.chatBalon) };
 const getTopButtons = () => { return document.querySelectorAll(selectors.topButtons) };
 const getParticipantId = () => { return document.querySelector(selectors.participantId) };
 const getActionButtons = () => {
@@ -92,12 +92,11 @@ function createOption() {
 }
 
 function initialize() {
+  configClosedChatObserver();
 
-  //observableChatClosed()
-  console.log(getTopButtons())
   getTopButtons().forEach(el => {
     el.addEventListener('click', () => {
-      configChatObserver()
+      configOpenedChatObserver()
     })
   })
 
@@ -105,7 +104,7 @@ function initialize() {
 
 }
 
-function configChatObserver() {
+function configOpenedChatObserver() {
   if (getAriaLive()) {
     let callback = (mutationRecord, observer) => {
       if (mutationRecord.length == 1) {
@@ -138,7 +137,7 @@ function configChatObserver() {
 
 
 
-/*   function observableChatClosed() {
+function configClosedChatObserver() {
   function callback(mutationRecord, observer) {
     let messageElement = mutationRecord[mutationRecord.length - 1].addedNodes[0];
     if (messageElement && mActive) {
@@ -156,7 +155,7 @@ function configChatObserver() {
     subtree: true
   };
   observer.observe(getBalonChat(), config);
-}  */
+}
 
 
 // Recebe a mensagem a ser notificada
