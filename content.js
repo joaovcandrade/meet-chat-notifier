@@ -7,8 +7,8 @@ mActive = true //estado?
 
 
 const translation = {
-  pt: { enable: "Ativar notificações", enableMsg: "Para receber as notificações, mantenha o chat aberto.<br> Clique no ícone da extensão para ver mais informações." },
-  en: { enable: "Enable notifications", enableMsg: "To receive notifications, keep the chat open.<br> Click the extension icon for more information." }
+  pt: { enable: "Ativar notificações", enableMsg: "Para receber as notificações, <br>mantenha o chat aberto.<br> Clique no ícone da extensão <br>para ver mais informações." },
+  en: { enable: "Enable notifications", enableMsg: "To receive notifications, <br>keep the chat open.<br> Click the extension <br>icon for more information." }
 }
 
 var lang = document.documentElement.lang.split('-')[0]
@@ -45,41 +45,113 @@ function initialConfig() {
 
 function createOption() {
   let el = document.createElement('div');
-  el.innerHTML =
-    `<div>
+  el.innerHTML =`
   <style>
-  .tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-  }
-  
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px;
-    word-wrap: break-word;
-    display: inline;
-    position: absolute;
-    z-index: 999;
-  }
-  
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-  }
-  </style>
-  <div>
-  <input type="checkbox" id="ck-notif" name="notif-chk" checked>
-  <label class="tooltip" for="notif-chk">${translation[lang].enable}
-  <span class="tooltiptext">${translation[lang].enableMsg}</span>
-  </label>
-  </div>
-  </div>`
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 27.2px;
+      top: 4px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: -1px;
+      left: 0;
+      right: -8px;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20.8px;
+      width: 20.8px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+    .slider.round {
+      border-radius: 34px;
+    }
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
 
-  getActionButtons().prepend(el)
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: auto;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      padding: 5px;
+      margin-left: 20%;
+      border-radius: 6px;
+    
+      /* Position the tooltip text - see examples below! */
+      position: absolute;
+      z-index: 1;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+    }
+    .container .btn {
+      display: flex;
+      justify-content: center;
+    }
+    .text {
+      color: #3c4043;
+      font-family: 'Google Sans',Roboto,Arial,sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+    }
+  </style>
+  <div class="container">
+    <label class="text">${translation[lang].enable}</label>
+    <div class="btn">
+      <label class="switch tooltip">
+        <input type="checkbox" id="ck-notif" name="notif-chk" checked>
+        <span class="slider round"></span>
+        <span class="tooltiptext">${translation[lang].enableMsg}</span>
+      </label>
+    </div>
+  </div>
+  `
+  console.log(getActionButtons());
+  console.log(el);
+  let bottomBar = getActionButtons().parentElement;
+  bottomBar.childNodes[2].prepend(el);
 
   document.querySelector("#ck-notif").addEventListener('change', () => {
     mActive = !mActive
