@@ -1,0 +1,35 @@
+{
+    "message_popup": {
+        "message": "Assegure-se de que as notificações em seu computador estão ativas\n\nMantenha o chat do Google Meet aberto para receber as notifiações.\n\nAlguma coisa não está funcionando? Mande sua mensagem no formulário de contato."
+    },
+    "site_message": {
+        "message": "Site da extensão"
+    },
+    "site_url": {
+        "message": "https://sites.google.com/view/meet-chat-notifier"
+    },
+    "faq_message": {
+        "message": "Perguntas frequentes"
+    },
+    "contact_form":{
+        "message": "Formulário de contato"
+    },
+    "contact_form_url":{
+        "message": "https://forms.gle/YHr8R3jNLTjRUYaG9"
+    },
+    "about_us":{
+        "message":"Sobre nós"
+    },
+    "about_us_url":{
+        "message":"https://sites.google.com/view/meet-chat-notifier/about-us"
+    },
+    "faq_url": {
+        "message": "https://sites.google.com/view/meet-chat-notifier/perguntas-frequentes"
+    },
+    "faq_1": {
+        "message": "Notificações acima de vídeos e apresentações em tela cheia (Windows 10)"
+    },
+    "faq_1_url": {
+        "message": "https://sites.google.com/view/meet-chat-notifier/perguntas-frequentes#h.fmx4weu5ktoy"
+    }
+}

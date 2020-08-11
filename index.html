@@ -1,19 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" />
     <title>Meet Chat Notifier</title>
 </head>
-<body style="width: 150px;">
-    <a data-translate="site_message" data-translate-url="site_url"></a>
+
+<body>
+
+    <h1>Meet Chat Notifier</h1>
+
     <hr>
-    <a data-translate="faq_message" data-translate-url="faq_url"></a>
+
+
+    <div class="box">
+        <a data-translate-url="faq_url"><button type="button" class="button" data-translate="faq_message"></button></a>
+
+        <p><a class="box-item" data-translate="faq_1" data-translate-url="faq_1_url"></a></p>
+
+    </div>
+
+
     <hr>
-    <a data-translate="faq_1" data-translate-url="faq_1_url"></a>
+
+    <a data-translate-url="site_url"><button type="button" class="button" data-translate="site_message"></button></a>
+
     <hr>
-    <p data-translate="message" data-translate-url="site_url"></p>
-<script src="popup.js"></script>
+
+    <a data-translate-url="contact_form_url"><button type="button" class="button"
+            data-translate="contact_form"></button></a>
+
+    <hr>
+
+
+    <span class="sm-txt" data-translate="message_popup"></span>
+
+    <hr>
+
+    <a data-translate-url="about_us_url" data-translate="about_us"></a>
+
+    <script src="popup.js"></script>
 </body>
 
 </html>

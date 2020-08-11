@@ -1,0 +1,35 @@
+{
+    "message_popup": {
+        "message": "Make sure notifications on your computer are enabled\n\nKeep the Google Meet chat open to receive notifications.\n\nIs something not working? Send your message in the contact form."
+    },
+    "site_message": {
+        "message": "Extension website"
+    },
+    "site_url": {
+        "message": "https://sites.google.com/view/meet-chat-notifier"
+    },
+    "faq_message": {
+        "message": "FAQ"
+    },
+    "contact_form":{
+        "message": "Contact form"
+    },
+    "contact_form_url":{
+        "message": "https://forms.gle/YHr8R3jNLTjRUYaG9"
+    },
+    "about_us":{
+        "message":"About Us"
+    },
+    "about_us_url":{
+        "message":"https://sites.google.com/view/meet-chat-notifier/about-us"
+    },
+    "faq_url": {
+        "message": "https://sites.google.com/view/meet-chat-notifier/perguntas-frequentes"
+    },
+    "faq_1": {
+        "message": "Notifications above videos and full-screen presentations (Windows 10)"
+    },
+    "faq_1_url": {
+        "message": "https://sites.google.com/view/meet-chat-notifier/perguntas-frequentes#h.fmx4weu5ktoy"
+    }
+}

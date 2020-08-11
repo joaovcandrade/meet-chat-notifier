@@ -1,4 +1,4 @@
-mActive = true //estado?
+mActive = true //state of extension?
 
 /**
  * Ficar no loop de verificar se esta aberto ou fechado o chat
@@ -6,24 +6,27 @@ mActive = true //estado?
  */
 
 
+ //translation of extensio (pt: portuguese, en: english)
 const translation = {
-  pt: { enable: "Ativar notificações", enableMsg: "Para receber as notificações, <br>mantenha o chat aberto.<br> Clique no ícone da extensão <br>para ver mais informações." },
-  en: { enable: "Enable notifications", enableMsg: "To receive notifications, <br>keep the chat open.<br> Click the extension <br>icon for more information." }
+  pt: { enable: "Notificações", enableMsg: "Assegure-se de que<br> as notificações em seu computador estão ativas.<br> Clique no ícone da extensão <br>para ver mais informações." },
+  en: { enable: "Notifications", enableMsg: "Make sure notifications<br> on your computer are enabled.<br> Click the extension icon<br> for more information." }
 }
 
+//Get lang of meet html
 var lang = document.documentElement.lang.split('-')[0]
 if (!translation[lang]) { lang = 'en' }
 
+
 const selectors = {
-  ariaLive: '[aria-live=polite]:not([aria-atomic])', // CSS class of chat div: mKBhCf qwU8Me RlceJe kjZr4 
-  chatBalon: '.NSvDmb', // NSvDmb cM3h5d
-  actionButtons: '[data-tooltip][data-is-muted]', //
+  ariaLive: '[aria-live=polite]:not([aria-atomic])', 
+  chatBalloon: '.NSvDmb',
+  actionButtons: '[data-tooltip][data-is-muted]', 
   participantId: '[data-initial-participant-id]',
   topButtons: '[data-tooltip][data-tab-id]'
 };
 
-const getAriaLive = () => { return document.querySelector(selectors.ariaLive) };
-const getBalonChat = () => { return document.querySelector(selectors.chatBalon) };
+const getAriaLive = () => { return document.querySelector(selectors.ariaLive) }; //Open chat area-live
+const getBalloonChat = () => { return document.querySelector(selectors.chatBalloon) }; //Closed chat area-live (baon)
 const getTopButtons = () => { return document.querySelectorAll(selectors.topButtons) };
 const getParticipantId = () => { return document.querySelector(selectors.participantId) };
 const getActionButtons = () => {
@@ -34,15 +37,30 @@ const getActionButtons = () => {
 
 initialConfig()
 
-/** 
- * Configuração de um observador para se o chat está aberto ou fechado 
- * Fica no loop até que ele que a pagina esteja carregada.
-*/
-function initialConfig() {
+//Wait meeting start
+function initialConfig() {  
 
   setTimeout(() => { getParticipantId() ? initialize() : initialConfig() }, 1000);
 }
 
+ 
+function initialize() {
+
+  //Observer balloon messages.
+  configClosedChatObserver();
+
+  //Listen top meet buttons for start observer of opened chat messages.
+  getTopButtons().forEach(el => {
+    el.addEventListener('click', () => {
+      configOpenedChatObserver()
+    })
+  })
+
+  //Switch element on bottom bar (on/off).
+  createOption();
+}
+
+//Switch create element to on/off notifications, and append to meet bar.
 function createOption() {
   let el = document.createElement('div');
   el.innerHTML =`
@@ -106,14 +124,14 @@ function createOption() {
     .tooltip .tooltiptext {
       visibility: hidden;
       width: auto;
+      bottom: 100%;
       background-color: black;
       color: #fff;
       text-align: center;
       padding: 5px;
-      margin-left: 20%;
+      margin-left: -60px;
+      left: 50%;
       border-radius: 6px;
-    
-      /* Position the tooltip text - see examples below! */
       position: absolute;
       z-index: 1;
     }
@@ -148,11 +166,15 @@ function createOption() {
     </div>
   </div>
   `
-  console.log(getActionButtons());
-  console.log(el);
+  
+  //Add switch to bottom bar
   let bottomBar = getActionButtons().parentElement;
   bottomBar.childNodes[2].prepend(el);
 
+  /*
+  Event when switch 'change'
+  The state is inverted. A message is sent to the bottom to clear the list of notifications
+  */
   document.querySelector("#ck-notif").addEventListener('change', () => {
     mActive = !mActive
     if(!mActive){
@@ -163,21 +185,10 @@ function createOption() {
   })
 }
 
-function initialize() {
-  configClosedChatObserver();
 
-  getTopButtons().forEach(el => {
-    el.addEventListener('click', () => {
-      configOpenedChatObserver()
-    })
-  })
-
-  createOption();
-
-}
-
+//Observer to get messages (sender name, message text) from aria-live, when te chat is opened and the notifications state is on
 function configOpenedChatObserver() {
-  if (getAriaLive()) {
+    if (getAriaLive()) {
     let callback = (mutationRecord, observer) => {
       if (mutationRecord.length == 1) {
         let messageElement = mutationRecord[mutationRecord.length - 1].addedNodes[0];
@@ -208,7 +219,7 @@ function configOpenedChatObserver() {
 }
 
 
-
+/*Observer to to get messages (sender name, message text) from aria-live of balloon*/
 function configClosedChatObserver() {
   function callback(mutationRecord, observer) {
     let messageElement = mutationRecord[mutationRecord.length - 1].addedNodes[0];
@@ -226,11 +237,11 @@ function configClosedChatObserver() {
     childList: true,
     subtree: true
   };
-  observer.observe(getBalonChat(), config);
+  observer.observe(getBalloonChat(), config);
 }
 
 
-// Recebe a mensagem a ser notificada
+//Send to backgroung the sender name and the message to background
 function showNotification(sender, message) {
 
   var opt = {

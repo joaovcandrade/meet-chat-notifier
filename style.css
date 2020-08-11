@@ -1,0 +1,46 @@
+body {
+    font-family: 'Roboto', 'LocalRoboto', 'Helvetica Neue', 'Helvetica', 'sans-serif';
+    background: #ffffff;
+    padding: 2px 0 3px 0;
+    width: 250px;
+    overflow: hidden;
+    font-size: 12px;
+}
+
+.button {
+    cursor:pointer;
+    font: bold 16;
+    text-decoration: none;
+    background-color: #4CAF50;
+    border: none;
+    color: #ffffff;
+    padding: 5px;
+    width: 100%;
+  }
+
+  .button:hover {
+    background-color: #73ec77;
+  }
+
+.sm-txt {
+    font-style: italic;
+}
+
+.box {
+
+    padding: 10px;
+    background-color: #cccc;
+}
+
+.box > .box-item{
+    margin: 5px;
+}
+
+a{
+    cursor:pointer;
+    text-decoration: none;
+}
+
+h1{
+    color: #249e14
+}
