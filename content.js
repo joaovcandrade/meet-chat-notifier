@@ -62,7 +62,19 @@ function initialize() {
 
 //Switch create element to on/off notifications, and append to meet bar.
 function createOption() {
+  //check if ShadowDOM
+  if(!document.body.createShadowRoot){
+    //Add switch (shadowDOM Webcomponent to avoid other css/extensions interference) to bottom bar
+  let bottomBar = getActionButtons().parentElement;
+  let temp = document.createElement('div')
+  temp.id = 'host'
+  bt = bottomBar.childNodes[2].prepend(temp);
+
+
+  elShadow = document.querySelector("#host").attachShadow({mode: 'closed'});
+
   let el = document.createElement('div');
+
   el.innerHTML =`
   <style>
     .switch {
@@ -167,15 +179,13 @@ function createOption() {
   </div>
   `
   
-  //Add switch to bottom bar
-  let bottomBar = getActionButtons().parentElement;
-  bottomBar.childNodes[2].prepend(el);
+  elShadow.prepend(el)
 
   /*
   Event when switch 'change'
   The state is inverted. A message is sent to the bottom to clear the list of notifications
   */
-  document.querySelector("#ck-notif").addEventListener('change', () => {
+  elShadow.querySelector("#ck-notif").addEventListener('change', () => {
     mActive = !mActive
     if(!mActive){
       chrome.runtime.sendMessage({
@@ -184,6 +194,8 @@ function createOption() {
     }
   })
 }
+  }
+  
 
 
 //Observer to get messages (sender name, message text) from aria-live, when te chat is opened and the notifications state is on
@@ -224,7 +236,6 @@ function configClosedChatObserver() {
   function callback(mutationRecord, observer) {
     let messageElement = mutationRecord[mutationRecord.length - 1].addedNodes[0];
     if (messageElement && mActive) {
-      console.log(mutationRecord)
       let sender = messageElement.querySelector('.UgDTGe');
       let message = messageElement.querySelector('.xtO4Tc');
       showNotification(sender.innerText, message.innerText);
