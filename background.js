@@ -1,4 +1,4 @@
-messagesId = []
+//messagesId = []
 messages = []
 watching = false
 
@@ -16,6 +16,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
   if (!watching) { //If the message queue is still not being watched
     watching = true
+    
     notifier() //Start the notifier queque
   }
 
@@ -31,10 +32,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
     messages = [] //clear messages queque
 
-    while(messages > 0){ //clear already launched messages saved in the queue
+    /*while(messages > 0){ //clear already launched messages saved in the queue
       chrome.notifications.clear(messagesId.shift(), () => {})
-    }      
-    }
+    }*/     
+    } 
 
   sendResponse(true);
   
@@ -43,7 +44,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 function notifier() {
 
-  setInterval(() => {
     if (messages.length > 0) {
 
       nId = getNotificationId()
@@ -51,17 +51,20 @@ function notifier() {
       //Create the next queue notification
       notification = chrome.notifications.create(nId, messages.shift(), function (nId) {
 
-        messagesId.push(nId) //Store id of launched messages
-
         //Clean notification
-        setTimeout(function () {
-          chrome.notifications.clear(messagesId.shift(), () => { })
-        }, 4000);
+          setTimeout(function (_nId) {
+            chrome.notifications.clear(_nId, () => {
+              notifier()
+            })
+          }, 4000, nId);
 
       })
 
+    }else{
+      watching = false
     }
-  }, 3000);
+    
+  
 
 }
 
