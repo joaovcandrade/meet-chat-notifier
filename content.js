@@ -8,8 +8,8 @@ mActive = true //state of extension?
 
 //translation of extensio (pt: portuguese, en: english)
 const translation = {
-  pt: { enable: "Notificações", enableMsg: "Assegure-se de que<br> as notificações em seu computador estão ativas.<br> Clique no ícone da extensão <br>para ver mais informações." },
-  en: { enable: "Notifications", enableMsg: "Make sure notifications<br> on your computer are enabled.<br> Click the extension icon<br> for more information." }
+  pt: { enable: "Notificações", enableMsg: "Assegure-se de que<br> as notificações em seu computador estão ativas.<br> Clique no ícone da extensão <br>para ver mais informações.", you: "Você" },
+  en: { enable: "Notifications", enableMsg: "Make sure notifications<br> on your computer are enabled.<br> Click the extension icon<br> for more information.", you: "You" }
 }
 
 //Get lang of meet html
@@ -212,7 +212,9 @@ function configOpenedChatObserver() {
             senderName = messageElement.parentElement.parentNode.dataset.senderName
             message_text = messageElement.innerText
           }
-          showNotification(senderName, message_text);
+          if (senderName != translation[lang].you) {
+            showNotification(senderName, message_text);
+          }
         }
       }
 
